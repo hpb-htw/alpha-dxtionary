@@ -1,0 +1,24 @@
+body.vscode-light {
+    color: black;
+}
+  
+body.vscode-dark {
+    color: white;
+}
+
+body.vscode-high-contrast {
+    color: red;
+}
+
+h2 {
+    padding: 0 0 1em 0; 
+    margin: 20px 0 20px 0;
+}
+
+span#main-title {
+    float: left;
+}
+
+span#search-mask{
+    float: right;
+}
