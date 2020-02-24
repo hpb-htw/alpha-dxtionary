@@ -13,17 +13,6 @@ const LOOKUP_CMD_CURSOR = `${CMD_PREFIX}dxtionary.lookup.cursor`;
 const EXTRACT_BUILT_IN_DICT = `${CMD_PREFIX}dxtionary.extract.builtin.dict`;
 
 
-let extensionEnv : {
-	dictViewResource: {
-		cssPath?: string,
-		jsPath?: string,
-		template?: string
-	}
-} = {
-	dictViewResource: {}
-};
-
-
 
 /** where to save static css and js files for Extension's Webview */
 const RESOURCE_PATH = "resource";
@@ -49,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if(word && word.length > 0) {
 			try{
 				let entry = await lookup(word, context);				
-				DictView.showEntry(word, entry, context);
+				DictView.showEntry(word, {wiki:entry, word:word}, context);
 			}catch(ex) {
 				console.log(ex);//log exception
 				vscode.window.showInformationMessage(`something goes wrong as lookup ${word}`);
@@ -136,11 +125,12 @@ class DictView {
 	private showLookupWord(word:string, entry:any) {
 		try{
 			this.dictionaryPanel.reveal(vscode.ViewColumn.Beside, true);
+			this.dictionaryPanel.webview.postMessage( entry );
 		}catch(e) { // anything can happen :(
 			console.log(e);
 		}
 		//TODO
-		console.log(`TODO: show ${word} with result ${entry}`);
+		console.dir(`TODO: show ${word} with result ${entry}`);
 	}
 
 	private updateHTML() {		
@@ -215,96 +205,6 @@ async function lookup(word: string, context: vscode.ExtensionContext):Promise<st
 	return Promise.resolve(`<pre>TODO: write code to lookup „${word}“</pre>`);
 }
 
-
-function showEntry(word: string, entry: string, context: vscode.ExtensionContext) {	
-	if (dictionaryPanel) {
-		dictionaryPanel.reveal(vscode.ViewColumn.Beside, true);
-	} else {
-		dictionaryPanel = vscode.window.createWebviewPanel(
-			LOOKUP_CMD,
-			word,
-			vscode.ViewColumn.Beside,
-			{
-				enableScripts: true
-			}
-		);
-
-		dictionaryPanel.onDidDispose(
-			() => {
-				dictionaryPanel = undefined;// assign it to undefined to unmantaine it
-			},
-			null,
-			context.subscriptions
-		);
-	}	
-	dictionaryPanel.title = "Suche " + word;
-	let resourceUrl = calculateResourceForWebView(dictionaryPanel, context);
-	let html = render(word, entry, resourceUrl);
-	console.log(html); // Debug only. Remove it asap.
-	dictionaryPanel.webview.html = html;
-	webviewDictPanelReady = true;
-}
-
-function calculateResourceForWebView(panel:vscode.WebviewPanel|undefined, context:vscode.ExtensionContext): DictResource {
-	if (panel !== undefined) {
-		let cssPath = vscode.Uri.file(
-			path.join(context.extensionPath, RESOURCE_PATH, 'dict.css')
-		);
-		let jsPath = vscode.Uri.file(
-			path.join(context.extensionPath, RESOURCE_PATH, 'dict.js')
-		);
-		return { 
-			css: panel.webview.asWebviewUri(cssPath).toString(), 
-			js: panel.webview.asWebviewUri(jsPath).toString()
-		};
-	} else {
-		return {css:undefined, js:undefined};
-	}
-}
-
-function render(word: string, lookupResult: string, resource:DictResource):string {
-	let {css, js} = resource;
-	let cssTag:string = "";
-	if(css !== undefined) {
-		cssTag = `<link rel="stylesheet" type="text/css" href="${css}"></link>`;
-	}
-	let jsTag:string = "";
-	if (js !== undefined) {
-		jsTag = `<script src="${js}"></script>`;
-	}
-	return `
-	<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    ${cssTag}
-    <title>${word}</title>		
-</head>
-<body>
-    <h2><span id="main-title">Suchergebnis von „${word}“</span>
-        
-        <span id="search-mask"><input type="text" id="search-word" placeholder="Suche" />
-        <input type="button" id="search" value="Ok"/></span>
-    </h2>
-    
-    <br>
-    <div id="search-result">
-    ${lookupResult}
-    </div>
-    
-    <div id="similar">
-        <h4>Lexikalisch ähnliche Wörter</h4>
-        (Ähnliche Wörter werden hier dargestellt)
-        
-        <h4>Sinnverwandte Wörter</h4>
-        (Wörter im Zusammenhang mit dem gesuchten Wort)
-    </div>
-    ${jsTag}
-</body>
-</html>
-	`;
-}
 
 
 /**

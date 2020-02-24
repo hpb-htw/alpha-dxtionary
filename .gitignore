@@ -1,4 +1,9 @@
 out
 node_modules
+resource
+bin
+data
 .vscode-test/
 *.vsix
+**/.cache
+

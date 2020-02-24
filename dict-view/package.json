@@ -1,0 +1,10 @@
+{
+  "name": "dict-view",
+  "version": "0.0.1",
+  "description": "dict-view front-end",
+  "scripts": {
+    "make-all": "make all"
+  },
+  "author": "",
+  "license": "ISC"
+}
