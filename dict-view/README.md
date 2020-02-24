@@ -14,11 +14,7 @@ If filenames in this project are changed, so the generated file in `../resource`
 changed. Therfore constants, in `../src/extensions.ts`, which point to these files
 must be addapted.
 
-## NPM und Node
-This project uses NPM to keep dependency manageable (*handhabbar*).
 
-## Makefile
-This project uses Makefile to keep long-options command maintainable.
 
 
 

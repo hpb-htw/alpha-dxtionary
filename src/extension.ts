@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { makeTemplate, applyTemplate, LINK, SCRIPT } from './template-processor';
+import { DbBridge } from './db-bridge';
 
 
 
@@ -16,35 +17,26 @@ const EXTRACT_BUILT_IN_DICT = `${CMD_PREFIX}dxtionary.extract.builtin.dict`;
 
 /** where to save static css and js files for Extension's Webview */
 const RESOURCE_PATH = "resource";
-type DictResource = {
-	css: string|undefined, 
-	js: string|undefined
-};
-/**
- * A Webview to show lookup Result, may be undefined
- */
-let dictionaryPanel: vscode.WebviewPanel | undefined = undefined;
-
 
 const normalizedArg = (word:string|undefined) => word && word.trim().length > 0 ? [word] : [""];
-let webviewDictPanelReady = false;
 
 export function activate(context: vscode.ExtensionContext) {
 
 	console.log(`registry extension`);
-	
+	const bridge = new DbBridge(context.extensionPath);
+
 	// every lookup can use command ${LOOKUP_CMD} to perform lookup.
 	const lookupHandler = async (word: string) => {
 		if(word && word.length > 0) {
 			try{
-				let entry = await lookup(word, context);				
-				DictView.showEntry(word, {wiki:entry, word:word}, context);
+				let entries = await bridge.queryText(word);
+				DictView.showEntry(word, {match:entries, word:word}, context);
 			}catch(ex) {
 				console.log(ex);//log exception
 				vscode.window.showInformationMessage(`something goes wrong as lookup ${word}`);
 			}
 		}else {
-			vscode.window.showInformationMessage(webviewDictPanelReady ? "Wörterbuch ist initialisiert": "Kein Wort zum Nachschlagen" );
+			vscode.window.showInformationMessage("Kein Wort zum Nachschlagen" );
 		}
 	};
 	context.subscriptions.push(vscode.commands.registerCommand(LOOKUP_CMD, lookupHandler));
