@@ -2,8 +2,8 @@ export const LINK = '@link';
 export const SCRIPT = '@script'; 
 
 const TEMPLATE_REPLACE = {	
-	[LINK]: '<link rel="stylesheet" type="text/css" href="dict.a69f6b45.css">', 
-	[SCRIPT]: '<script src="dict.0e90a8c5.js"></script>'
+	[LINK]: '<link rel="stylesheet" type="text/css" href="./dict.css">', 
+	[SCRIPT]: '<script src="./dict.js"></script>'
 };
 
 /** 

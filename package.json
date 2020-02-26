@@ -63,6 +63,7 @@
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
+		"@types/lodash": "^4.14.149",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.42.0",
@@ -71,10 +72,12 @@
 		"mocha": "^6.2.2",
 		"ts-node": "^8.5.4",
 		"tslint": "^5.20.0",
-		"typescript": "^3.6.4",
+		"typescript": "^3.8.2",
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
-		"wikinary-eintopf": "file://../wikinary-eintopf"
+		"lodash": "^4.17.15",
+		"wikinary-eintopf": "file://../wikinary-eintopf",
+		"de-wiktionary-parser": "file://../de-wiktionary-parser"
 	}
 }

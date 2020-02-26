@@ -6,6 +6,7 @@ import {ENTRIES_IN_DE_WIKI,
     WikiDictionary, 
     EntryFormatter,
     Entry} from 'wikinary-eintopf';
+import { WikiEntry } from 'de-wiktionary-parser/lib/de_wiki_lang';
 
 // TODO: make a log system that write info into VScode chanel
 let logger = {
@@ -57,16 +58,16 @@ export function getBinariesPath(extensionPath: string, binName:string): string {
     }
 }
 
-class WebviewFormater implements EntryFormatter<object[]> {
+class WebviewFormater implements EntryFormatter<WikiEntry[]> {
 
-    data:object[] = [];
+    data:WikiEntry[] = [];
     count:number = 0;
 
     accumulate(e: Entry): void {     
-        this.data .push (JSON.parse(e.text));
+        this.data.push (JSON.parse(e.text));
     }   
 
-    serialize():object[] {
+    serialize():WikiEntry[] {
         return this.data;
     }
 
@@ -86,7 +87,7 @@ export class DbBridge {
         this.dict = new WikiDictionary(executableBin, dbPath);        
     }
 
-    async queryText(word:string): Promise<object[]> {
+    async queryText(word:string): Promise<WikiEntry[]> {
         return this.dict.typedQuery(word, new WebviewFormater());
     }
 

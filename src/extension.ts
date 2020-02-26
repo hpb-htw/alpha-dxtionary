@@ -29,6 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const lookupHandler = async (word: string) => {
 		if(word && word.length > 0) {
 			try{
+				DictView.showLoading(word, context);
 				let entries = await bridge.queryText(word);
 				DictView.showEntry(word, {match:entries, word:word}, context);
 			}catch(ex) {
@@ -84,8 +85,8 @@ class DictView {
 
 	/** These resources depend on _output_ of sub-project dict-view */
 	private static readonly templateName = "template.html";
-	private static readonly jsName = 'dict.0e90a8c5.js';
-	private static readonly cssName = 'dict.a69f6b45.css';
+	private static readonly jsName = 'dict.js';
+	private static readonly cssName = 'dict.css';
 
 	/** there should be only one instance of this class at a time */
 	private static instance : DictView|undefined;
@@ -95,6 +96,16 @@ class DictView {
 	private dictionaryPanel: vscode.WebviewPanel;
 	private extensionPath:string ;
 	private htmlTemplate:string;
+
+	public static showLoading(word:string, context: vscode.ExtensionContext) {
+		if (!DictView.instance) {
+			let dictionaryPanel = DictView.makeNewPanel(context) ;
+			DictView.instance = new DictView(dictionaryPanel, context.extensionPath);
+		}
+		let entry = {"test": "test"};
+		DictView.instance.showLookupWord(word, entry);
+	}
+
 
 	public static showEntry(word:string, entry:any, context: vscode.ExtensionContext) {
 		if (!DictView.instance) {
@@ -127,7 +138,7 @@ class DictView {
 
 	private updateHTML() {		
 		let cssUri = this.buildResourceUri(DictView.cssName);
-		let cssTag = `<link rel="stylesheet" type="text/css" href="${cssUri}"></link>`;			
+		let cssTag = `<link rel="stylesheet" type="text/css" href="${cssUri}"></link>`;		
 		let jsUri = this.buildResourceUri(DictView.jsName);
 		let jsTag = `<script src="${jsUri}"></script>`;
 		let html = applyTemplate(this.htmlTemplate, {[LINK]: cssTag, [SCRIPT]:jsTag});
@@ -147,8 +158,12 @@ class DictView {
 		let dictionaryPanel =  vscode.window.createWebviewPanel(
 			LOOKUP_CMD,
 			DictView.viewType,
-			vscode.ViewColumn.Beside,
-			{
+			{		
+				viewColumn:vscode.ViewColumn.Beside,
+				preserveFocus:true,
+			},			
+			{		
+				
 				// allow all script 
 				enableScripts: true,
 				// restrict to only load content from resource (not at dev time)
@@ -181,20 +196,6 @@ class DictView {
 		return DictView.cachedHTMLTemplate;
 	}
 
-	
-
-}
-
-
-
-
-
-
-
-
-/** STATUS: TODO */
-async function lookup(word: string, context: vscode.ExtensionContext):Promise<string>{
-	return Promise.resolve(`<pre>TODO: write code to lookup „${word}“</pre>`);
 }
 
 
