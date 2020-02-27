@@ -2,7 +2,7 @@ import {makeTemplate} from '../template-processor';
 import * as assert from "assert";
 import {readFileSync} from "fs";
 
-suite('makeTemplate', () => {
+suite('template-processor', () => {
     test('makeTemplate', () => {
         let plainHTML:string = readFileSync("./resource/template.html", "utf8");
         let htmlTemplate = makeTemplate(plainHTML);        

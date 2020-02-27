@@ -15,6 +15,11 @@ changed. Therfore constants, in `../src/extensions.ts`, which point to these fil
 must be addapted.
 
 
+## Fast test
+To try something, just call `parcel serve template.html`. 
 
-
+## Notes
+`renderjson` is a copy with small chang from `https://github.com/caldwell/renderjson`.
+It just shows structure of result from database, and will be replaced as soon as an optical design
+finish is.
 

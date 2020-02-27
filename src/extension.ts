@@ -74,6 +74,8 @@ export function activate(context: vscode.ExtensionContext) {
 		_extractBuiltinDicts(dictPath, dbFile);
 	};
 	context.subscriptions.push(vscode.commands.registerCommand(EXTRACT_BUILT_IN_DICT, extractBuiltinDicts));
+
+	
 }
 
 export function deactivate() {}
@@ -101,9 +103,8 @@ class DictView {
 		if (!DictView.instance) {
 			let dictionaryPanel = DictView.makeNewPanel(context) ;
 			DictView.instance = new DictView(dictionaryPanel, context.extensionPath);
-		}
-		let entry = {"test": "test"};
-		DictView.instance.showLookupWord(word, entry);
+		}		
+		DictView.instance.showLoading(word);
 	}
 
 
@@ -130,10 +131,17 @@ class DictView {
 			this.dictionaryPanel.reveal(vscode.ViewColumn.Beside, true);
 			this.dictionaryPanel.webview.postMessage( entry );
 		}catch(e) { // anything can happen :(
-			console.log(e);
-		}
-		//TODO
-		console.dir(`TODO: show ${word} with result ${entry}`);
+			console.error(e);
+		}		
+	}
+
+	private showLoading(word:string) {
+		try{
+			this.dictionaryPanel.reveal(vscode.ViewColumn.Beside, true);
+			this.dictionaryPanel.webview.postMessage( word );
+		}catch(e) { // anything can happen :(
+			console.error(e);
+		}		
 	}
 
 	private updateHTML() {		
@@ -182,7 +190,12 @@ class DictView {
 
 		// install handler for Post Message from the webview
 		dictionaryPanel.webview.onDidReceiveMessage(message => {
-			console.log(`TODO: show received data ${message}`);			
+			console.log(JSON.stringify(message));
+			const args = normalizedArg(message);
+			vscode.commands.executeCommand(LOOKUP_CMD, ...args)
+			.then(done => {
+				console.log(`success lookup ${done} from webview panel`);
+			});		
 		});
 		return dictionaryPanel;
 	}

@@ -3,9 +3,10 @@
 OUT_DIR = resource
 SRC_DIR = dict-view
 TS_SRC = $(wildcard $(SRC_DIR)/*.ts)
+JS_SRC = $(wildcard $(SRC_DIR)/*.js)
 
 # parcel configuration options
-common_options = --target browser node --bundle-node-modules --out-dir $(OUT_DIR) --public-url "./" 
+common_options = --target browser --global acquireVsCodeApi --bundle-node-modules --out-dir $(OUT_DIR) --public-url "./" 
 build_options  = build $(common_options) --no-content-hash --detailed-report 10
 watch_options  = $(common_options)
 
@@ -17,7 +18,7 @@ template.html = $(OUT_DIR)/template.html
 all: $(template.html) $(dict.js)
 
 
-$(dict.js): $(TS_SRC) $(SRC_DIR)/dict.css
+$(dict.js): $(TS_SRC) $(JS_SRC) $(SRC_DIR)/dict.css
 	parcel $(build_options) $<  --out-file $@
 
 $(template.html): $(SRC_DIR)/template.html

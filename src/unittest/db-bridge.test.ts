@@ -1,6 +1,6 @@
 import {getBinariesPath, DbBridge} from "../db-bridge";
 import * as assert from "assert";
-import { WikiEntry, WikiPage } from "de-wiktionary-parser/lib/de_wiki_lang";
+import { WikiLang } from "wikinary-eintopf";
 
 suite("getBinariesPath", ()=>{
     let extensionPath = "./";
@@ -14,7 +14,7 @@ suite("DbBridge", ()=> {
     let extensionPath = "./";
     test("query a word", async () => {
         let bridge:DbBridge  = new  DbBridge(extensionPath);
-        let result:WikiEntry[] = await bridge.queryText("Rosa");
+        let result:WikiLang.WikiEntry[] = await bridge.queryText("Rosa");
         assert.equal(result.length, 5);
         for(let e of result) {
             for(let p of e) {

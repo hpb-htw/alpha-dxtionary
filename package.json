@@ -76,8 +76,6 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
-		"lodash": "^4.17.15",
-		"wikinary-eintopf": "file://../wikinary-eintopf",
-		"de-wiktionary-parser": "file://../de-wiktionary-parser"
+		"wikinary-eintopf": "file://../wikinary-eintopf"
 	}
 }
