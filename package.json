@@ -52,14 +52,14 @@
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"vscode:public": "./scripts/release.sh",
-		"compile": "tsc -p ./",
+		"compile": "make compile",
 		"watch": "tsc -watch -p ./",
-		"clean": "rm -rf out *.vsix",
+		"clean": "make clean",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
-		"unit:test": "node --inspect --trace-uncaught ./node_modules/.bin/mocha --ui tdd --require ts-node/register --watch-extensions ts,tsx \"./src/unittest/**/*.{ts,tsx}\"",
-		"refresh": "rm -rf node_modules out; npm install --no-optional; npm install --no-save wikinary-eintopf@file://../wikinary-eintopf",
-		"package": "vsce package"
+		"unit:test": "make unit",
+		"refresh": "make refresh",
+		"package": "make package"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -72,7 +72,7 @@
 		"mocha": "^6.2.2",
 		"ts-node": "^8.5.4",
 		"tslint": "^5.20.0",
-		"typescript": "^3.7.5",
+		"typescript": "^3.8.2",
 		"vscode-test": "^1.2.2"
 	},
 	"peerDependencies": {
