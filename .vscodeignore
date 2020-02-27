@@ -2,10 +2,14 @@
 .vscode-test/**
 out/test/**
 src/**
+scripts/**
+dict-view/**
+data/dict.sqlite
 .gitignore
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/tslint.json
 **/*.map
 **/*.ts
-scripts/**
+
+node_modules/wikinary-eintopf/node_modules/**
